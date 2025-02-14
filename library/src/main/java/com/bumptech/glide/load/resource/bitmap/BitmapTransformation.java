@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder.UseCreateBitmapToPreserveGainmapForTransformations;
+import com.bumptech.glide.GlideExperiments;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -78,9 +80,12 @@ public abstract class BitmapTransformation implements Transformation<Bitmap> {
     }
     BitmapPool bitmapPool = Glide.get(context).getBitmapPool();
     Bitmap toTransform = resource.get();
+    GlideExperiments experiments = Glide.get(context).getGlideContext().getExperiments();
+
     int targetWidth = outWidth == Target.SIZE_ORIGINAL ? toTransform.getWidth() : outWidth;
     int targetHeight = outHeight == Target.SIZE_ORIGINAL ? toTransform.getHeight() : outHeight;
-    Bitmap transformed = transform(bitmapPool, toTransform, targetWidth, targetHeight);
+    boolean useCreateBitmapToPreserveGainmap =  experiments.isEnabled(UseCreateBitmapToPreserveGainmapForTransformations.class);
+    Bitmap transformed = transform(bitmapPool, toTransform, targetWidth, targetHeight,useCreateBitmapToPreserveGainmap);
 
     final Resource<Bitmap> result;
     if (toTransform.equals(transformed)) {

@@ -395,7 +395,7 @@ public class Glide implements ComponentCallbacks2 {
   }
 
   @NonNull
-  GlideContext getGlideContext() {
+  public GlideContext getGlideContext() {
     return glideContext;
   }
 

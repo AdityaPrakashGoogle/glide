@@ -514,6 +514,19 @@ public final class GlideBuilder {
     return this;
   }
 
+  /**
+   *  Use Create Bitmap to Preserves gainmap and color spaces while {@link Bitmap}s undergo transformation, i.e., in
+   * {@link com.bumptech.glide.load.resource.bitmap.TransformationUtils}.
+   *
+   * <p>Without this flag on, gainmap and color space information may be dropped in transformations,
+   * leading to unexpected behavior when transforming wide gamut images or Ultra HDR images.
+   */
+  public GlideBuilder setUseCreateBitmapToPreserveGainmapForTransformations(boolean isEnabled) {
+    glideExperimentsBuilder.update(new UseCreateBitmapToPreserveGainmapForTransformations(), isEnabled);
+    return this;
+  }
+
+
   void setRequestManagerFactory(@Nullable RequestManagerFactory factory) {
     this.requestManagerFactory = factory;
   }
@@ -622,4 +635,10 @@ public final class GlideBuilder {
 
   /** See {@link #setLogRequestOrigins(boolean)}. */
   public static final class LogRequestOrigins implements Experiment {}
+
+  /**
+   * Use Create Bitmap to Preserves gainmap and color spaces while {@link Bitmap}s undergo transformation, i.e., in
+   * {@link com.bumptech.glide.load.resource.bitmap.TransformationUtils}.
+   */
+  public static final class UseCreateBitmapToPreserveGainmapForTransformations implements Experiment {}
 }

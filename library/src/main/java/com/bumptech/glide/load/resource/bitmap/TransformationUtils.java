@@ -132,11 +132,10 @@ public final class TransformationUtils {
     m.setScale(scale, scale);
     m.postTranslate((int) (dx + 0.5f), (int) (dy + 0.5f));
 
-    Bitmap result = pool.get(width, height, getNonNullConfig(inBitmap));
-    // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
-    TransformationUtils.setAlpha(inBitmap, result);
+    Bitmap result =
+        Bitmap.createBitmap(
+            inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), m, true /*filter*/);
 
-    applyMatrix(inBitmap, result, m);
     return result;
   }
 
@@ -175,30 +174,20 @@ public final class TransformationUtils {
       return inBitmap;
     }
 
-    // Take the floor of the target width/height, not round. If the matrix
-    // passed into drawBitmap rounds differently, we want to slightly
-    // overdraw, not underdraw, to avoid artifacts from bitmap reuse.
-    targetWidth = (int) (minPercentage * inBitmap.getWidth());
-    targetHeight = (int) (minPercentage * inBitmap.getHeight());
-
-    Bitmap.Config config = getNonNullConfig(inBitmap);
-    Bitmap toReuse = pool.get(targetWidth, targetHeight, config);
-
-    // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
-    TransformationUtils.setAlpha(inBitmap, toReuse);
-
     if (Log.isLoggable(TAG, Log.VERBOSE)) {
       Log.v(TAG, "request: " + width + "x" + height);
       Log.v(TAG, "toFit:   " + inBitmap.getWidth() + "x" + inBitmap.getHeight());
-      Log.v(TAG, "toReuse: " + toReuse.getWidth() + "x" + toReuse.getHeight());
       Log.v(TAG, "minPct:   " + minPercentage);
     }
 
     Matrix matrix = new Matrix();
     matrix.setScale(minPercentage, minPercentage);
-    applyMatrix(inBitmap, toReuse, matrix);
 
-    return toReuse;
+    Bitmap result =
+            Bitmap.createBitmap(
+                    inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true /*filter*/);
+
+    return result;
   }
 
   /**
@@ -565,23 +554,6 @@ public final class TransformationUtils {
   // Avoids warnings in M+.
   private static void clear(Canvas canvas) {
     canvas.setBitmap(null);
-  }
-
-  @NonNull
-  private static Bitmap.Config getNonNullConfig(@NonNull Bitmap bitmap) {
-    return bitmap.getConfig() != null ? bitmap.getConfig() : Bitmap.Config.ARGB_8888;
-  }
-
-  private static void applyMatrix(
-      @NonNull Bitmap inBitmap, @NonNull Bitmap targetBitmap, Matrix matrix) {
-    BITMAP_DRAWABLE_LOCK.lock();
-    try {
-      Canvas canvas = new Canvas(targetBitmap);
-      canvas.drawBitmap(inBitmap, matrix, DEFAULT_PAINT);
-      clear(canvas);
-    } finally {
-      BITMAP_DRAWABLE_LOCK.unlock();
-    }
   }
 
   @VisibleForTesting

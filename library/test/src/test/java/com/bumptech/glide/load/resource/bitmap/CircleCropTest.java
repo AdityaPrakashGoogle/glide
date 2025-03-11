@@ -53,7 +53,7 @@ public class CircleCropTest {
   @Test
   public void testTransform_withSquare() {
     Bitmap redSquare = createSolidRedBitmap(50, 50);
-    Bitmap result = circleCrop.transform(bitmapPool, redSquare, 50, 50);
+    Bitmap result = circleCrop.transform(bitmapPool, redSquare, 50, 50,false);
     Bitmap expected = createBitmapWithRedCircle(50, 50);
 
     assertSamePixels(expected, result);
@@ -65,7 +65,7 @@ public class CircleCropTest {
     when(bitmapPool.get(50, 50, Bitmap.Config.ARGB_8888)).thenReturn(toReuse);
 
     Bitmap redSquare = createSolidRedBitmap(50, 50);
-    Bitmap result = circleCrop.transform(bitmapPool, redSquare, 50, 50);
+    Bitmap result = circleCrop.transform(bitmapPool, redSquare, 50, 50,false);
 
     assertEquals(toReuse, result);
   }
@@ -73,7 +73,7 @@ public class CircleCropTest {
   @Test
   public void testTransform_withWideRectangle() {
     Bitmap redWideRectangle = createSolidRedBitmap(100, 50);
-    Bitmap result = circleCrop.transform(bitmapPool, redWideRectangle, 80, 50);
+    Bitmap result = circleCrop.transform(bitmapPool, redWideRectangle, 80, 50,false);
     Bitmap expected = createBitmapWithRedCircle(80, 50);
 
     assertSamePixels(expected, result);
@@ -82,7 +82,7 @@ public class CircleCropTest {
   @Test
   public void testTransform_withNarrowRectangle() {
     Bitmap redNarrowRectangle = createSolidRedBitmap(20, 50);
-    Bitmap result = circleCrop.transform(bitmapPool, redNarrowRectangle, 40, 80);
+    Bitmap result = circleCrop.transform(bitmapPool, redNarrowRectangle, 40, 80,false);
     Bitmap expected = createBitmapWithRedCircle(40, 80);
 
     assertSamePixels(expected, result);

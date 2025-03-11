@@ -84,8 +84,8 @@ public abstract class BitmapTransformation implements Transformation<Bitmap> {
 
     int targetWidth = outWidth == Target.SIZE_ORIGINAL ? toTransform.getWidth() : outWidth;
     int targetHeight = outHeight == Target.SIZE_ORIGINAL ? toTransform.getHeight() : outHeight;
-    boolean useCreateBitmapToPreserveGainmap =  experiments.isEnabled(UseCreateBitmapToPreserveGainmapForTransformations.class);
-    Bitmap transformed = transform(bitmapPool, toTransform, targetWidth, targetHeight,useCreateBitmapToPreserveGainmap);
+    boolean useCreateBitmapToPreserveGainMap =  experiments.isEnabled(UseCreateBitmapToPreserveGainmapForTransformations.class);
+    Bitmap transformed = transform(bitmapPool, toTransform, targetWidth, targetHeight,useCreateBitmapToPreserveGainMap);
 
     final Resource<Bitmap> result;
     if (toTransform.equals(transformed)) {
@@ -123,5 +123,5 @@ public abstract class BitmapTransformation implements Transformation<Bitmap> {
    *     need to match exactly).
    */
   protected abstract Bitmap transform(
-      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainmap);
+      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap);
 }

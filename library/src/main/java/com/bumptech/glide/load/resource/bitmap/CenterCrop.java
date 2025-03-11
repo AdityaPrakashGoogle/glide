@@ -18,8 +18,8 @@ public class CenterCrop extends BitmapTransformation {
 
   @Override
   protected Bitmap transform(
-      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainmap) {
-    return TransformationUtils.centerCrop(pool, toTransform, outWidth, outHeight,useCreateBitmapToPreserveGainmap);
+      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
+    return TransformationUtils.centerCrop(pool, toTransform, outWidth, outHeight,useCreateBitmapToPreserveGainMap);
   }
 
   @Override

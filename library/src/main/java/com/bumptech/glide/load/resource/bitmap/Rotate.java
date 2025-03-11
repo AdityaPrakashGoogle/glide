@@ -24,7 +24,7 @@ public class Rotate extends BitmapTransformation {
 
   @Override
   protected Bitmap transform(
-      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
     return TransformationUtils.rotateImage(toTransform, degreesToRotate);
   }
 

@@ -55,7 +55,7 @@ public class BitmapTransformationTest {
 
           @Override
           protected Bitmap transform(
-              @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+              @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
             return toTransform;
           }
         };
@@ -74,7 +74,7 @@ public class BitmapTransformationTest {
 
           @Override
           protected Bitmap transform(
-              @NonNull BitmapPool pool, @NonNull Bitmap bitmap, int outWidth, int outHeight) {
+              @NonNull BitmapPool pool, @NonNull Bitmap bitmap, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
             return transformed;
           }
         };
@@ -95,7 +95,7 @@ public class BitmapTransformationTest {
 
           @Override
           protected Bitmap transform(
-              @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+              @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
             assertEquals(bitmapPool, pool);
             assertEquals(resource.get(), toTransform);
             assertEquals(expectedWidth, outWidth);
@@ -120,7 +120,8 @@ public class BitmapTransformationTest {
               @NonNull BitmapPool bitmapPool,
               @NonNull Bitmap toTransform,
               int outWidth,
-              int outHeight) {
+              int outHeight,
+              boolean useCreateBitmapToPreserveGainMap) {
             return null;
           }
         };
@@ -140,7 +141,8 @@ public class BitmapTransformationTest {
               @NonNull BitmapPool bitmapPool,
               @NonNull Bitmap toTransform,
               int outWidth,
-              int outHeight) {
+              int outHeight,
+              boolean useCreateBitmapToPreserveGainMap) {
             return null;
           }
         };
@@ -157,7 +159,7 @@ public class BitmapTransformationTest {
 
           @Override
           protected Bitmap transform(
-              @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+              @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
             return null;
           }
         };
@@ -201,7 +203,7 @@ public class BitmapTransformationTest {
 
     @Override
     protected Bitmap transform(
-        @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+        @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
       givenWidth = outWidth;
       givenHeight = outHeight;
       return null;

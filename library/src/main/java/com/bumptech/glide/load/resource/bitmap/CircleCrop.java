@@ -22,7 +22,7 @@ public class CircleCrop extends BitmapTransformation {
   @SuppressWarnings("PMD.CompareObjectsWithEquals")
   @Override
   protected Bitmap transform(
-      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
     return TransformationUtils.circleCrop(pool, toTransform, outWidth, outHeight);
   }
 

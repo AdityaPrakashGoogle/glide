@@ -18,8 +18,8 @@ public class CenterInside extends BitmapTransformation {
 
   @Override
   protected Bitmap transform(
-      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
-    return TransformationUtils.centerInside(pool, toTransform, outWidth, outHeight);
+      @NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight,boolean useCreateBitmapToPreserveGainMap) {
+    return TransformationUtils.centerInside(pool, toTransform, outWidth, outHeight,useCreateBitmapToPreserveGainMap);
   }
 
   @Override

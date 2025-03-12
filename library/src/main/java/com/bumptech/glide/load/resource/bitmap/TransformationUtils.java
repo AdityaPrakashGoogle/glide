@@ -139,6 +139,8 @@ public final class TransformationUtils {
       result =
           Bitmap.createBitmap(
               inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), m, true /*filter*/);
+      // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
+      TransformationUtils.setAlpha(inBitmap, result);
     }else{
       result = pool.get(width, height, getNonNullConfig(inBitmap));
       // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
@@ -195,6 +197,8 @@ public final class TransformationUtils {
        toReuse =
           Bitmap.createBitmap(
               inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true /*filter*/);
+      // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
+      TransformationUtils.setAlpha(inBitmap, toReuse);
     }else{
       // Take the floor of the target width/height, not round. If the matrix
       // passed into drawBitmap rounds differently, we want to slightly

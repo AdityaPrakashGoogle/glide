@@ -131,15 +131,13 @@ public final class TransformationUtils {
     m.postTranslate((int) (dx + 0.5f), (int) (dy + 0.5f));
 
     Bitmap result =
-        Bitmap.createBitmap(inBitmap.getWidth(), inBitmap.getHeight(), getNonNullConfig(inBitmap));
-    Bitmap transformedBitmap =
         Bitmap.createBitmap(
-            result, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), m, true /*filter*/);
+            inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), m, true /*filter*/);
 
     // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
-    TransformationUtils.setAlpha(inBitmap, transformedBitmap);
+    TransformationUtils.setAlpha(inBitmap, result);
 
-    return transformedBitmap;
+    return result;
   }
 
   /**
@@ -183,32 +181,24 @@ public final class TransformationUtils {
     targetWidth = (int) (minPercentage * inBitmap.getWidth());
     targetHeight = (int) (minPercentage * inBitmap.getHeight());
 
-    Bitmap.Config config = getNonNullConfig(inBitmap);
-
     Matrix matrix = new Matrix();
     matrix.setScale(minPercentage, minPercentage);
 
-    Bitmap result = Bitmap.createBitmap(inBitmap.getWidth(), inBitmap.getHeight(), config);
-    Bitmap transformedBitmap =
+    Bitmap result =
         Bitmap.createBitmap(
-            result, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true /*filter*/);
+            inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true /*filter*/);
 
     // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
-    TransformationUtils.setAlpha(inBitmap, transformedBitmap);
+    TransformationUtils.setAlpha(inBitmap, result);
 
     if (Log.isLoggable(TAG, Log.VERBOSE)) {
       Log.v(TAG, "request: " + width + "x" + height);
       Log.v(TAG, "toFit:   " + inBitmap.getWidth() + "x" + inBitmap.getHeight());
-      Log.v(
-          TAG,
-          "transformedBitmap: "
-              + transformedBitmap.getWidth()
-              + "x"
-              + transformedBitmap.getHeight());
+      Log.v(TAG, "result: " + result.getWidth() + "x" + result.getHeight());
       Log.v(TAG, "minPct:   " + minPercentage);
     }
 
-    return transformedBitmap;
+    return result;
   }
 
   /**
@@ -575,11 +565,6 @@ public final class TransformationUtils {
   // Avoids warnings in M+.
   private static void clear(Canvas canvas) {
     canvas.setBitmap(null);
-  }
-
-  @NonNull
-  private static Bitmap.Config getNonNullConfig(@NonNull Bitmap bitmap) {
-    return bitmap.getConfig() != null ? bitmap.getConfig() : Bitmap.Config.ARGB_8888;
   }
 
   @VisibleForTesting

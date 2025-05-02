@@ -160,17 +160,6 @@ public class TransformationUtilsTest {
   }
 
   @Test
-  @Config(sdk = 19)
-  public void testFitCenterHandlesBitmapsWithNullConfigs() {
-    Bitmap toFit = Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565);
-    toFit.setConfig(null);
-    Bitmap transformed = TransformationUtils.fitCenter(bitmapPool, toFit, 50, 50);
-    assertEquals(Bitmap.Config.ARGB_8888, transformed.getConfig());
-  }
-
-
-
-  @Test
   public void testCenterCropSetsOutBitmapToHaveAlphaIfInBitmapHasAlpha() {
     Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
 
@@ -181,17 +170,6 @@ public class TransformationUtilsTest {
             bitmapPool, toTransform, toTransform.getWidth() / 2, toTransform.getHeight() / 2);
 
     assertTrue(result.hasAlpha());
-  }
-
-  @Test
-  @Config(sdk = 19)
-  public void testCenterCropHandlesBitmapsWithNullConfigs() {
-    Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565);
-    toTransform.setConfig(null);
-
-    Bitmap transformed = TransformationUtils.centerCrop(bitmapPool, toTransform, 50, 50);
-
-    assertEquals(Bitmap.Config.ARGB_8888, transformed.getConfig());
   }
 
   @Test

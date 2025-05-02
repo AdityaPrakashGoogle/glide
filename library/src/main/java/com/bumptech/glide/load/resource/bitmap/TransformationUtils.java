@@ -17,7 +17,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.exifinterface.media.ExifInterface;
-import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.util.Preconditions;
 import com.bumptech.glide.util.Synthetic;
@@ -35,7 +34,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class TransformationUtils {
   private static final String TAG = "TransformationUtils";
   public static final int PAINT_FLAGS = Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG;
-  private static final Paint DEFAULT_PAINT = new Paint(PAINT_FLAGS);
   private static final int CIRCLE_CROP_PAINT_FLAGS = PAINT_FLAGS | Paint.ANTI_ALIAS_FLAG;
   private static final Paint CIRCLE_CROP_SHAPE_PAINT = new Paint(CIRCLE_CROP_PAINT_FLAGS);
   private static final Paint CIRCLE_CROP_BITMAP_PAINT;
@@ -132,11 +130,13 @@ public final class TransformationUtils {
     m.setScale(scale, scale);
     m.postTranslate((int) (dx + 0.5f), (int) (dy + 0.5f));
 
-    Bitmap result = pool.get(width, height, getNonNullConfig(inBitmap));
+    Bitmap result =
+        Bitmap.createBitmap(
+            inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), m, true /*filter*/);
+
     // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
     TransformationUtils.setAlpha(inBitmap, result);
 
-    applyMatrix(inBitmap, result, m);
     return result;
   }
 
@@ -181,24 +181,24 @@ public final class TransformationUtils {
     targetWidth = (int) (minPercentage * inBitmap.getWidth());
     targetHeight = (int) (minPercentage * inBitmap.getHeight());
 
-    Bitmap.Config config = getNonNullConfig(inBitmap);
-    Bitmap toReuse = pool.get(targetWidth, targetHeight, config);
+    Matrix matrix = new Matrix();
+    matrix.setScale(minPercentage, minPercentage);
+
+    Bitmap result =
+        Bitmap.createBitmap(
+            inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true /*filter*/);
 
     // We don't add or remove alpha, so keep the alpha setting of the Bitmap we were given.
-    TransformationUtils.setAlpha(inBitmap, toReuse);
+    TransformationUtils.setAlpha(inBitmap, result);
 
     if (Log.isLoggable(TAG, Log.VERBOSE)) {
       Log.v(TAG, "request: " + width + "x" + height);
       Log.v(TAG, "toFit:   " + inBitmap.getWidth() + "x" + inBitmap.getHeight());
-      Log.v(TAG, "toReuse: " + toReuse.getWidth() + "x" + toReuse.getHeight());
+      Log.v(TAG, "result: " + result.getWidth() + "x" + result.getHeight());
       Log.v(TAG, "minPct:   " + minPercentage);
     }
 
-    Matrix matrix = new Matrix();
-    matrix.setScale(minPercentage, minPercentage);
-    applyMatrix(inBitmap, toReuse, matrix);
-
-    return toReuse;
+    return result;
   }
 
   /**
@@ -514,14 +514,14 @@ public final class TransformationUtils {
             path.addRoundRect(
                 rect,
                 new float[] {
-                  topLeft,
-                  topLeft,
-                  topRight,
-                  topRight,
-                  bottomRight,
-                  bottomRight,
-                  bottomLeft,
-                  bottomLeft
+                    topLeft,
+                    topLeft,
+                    topRight,
+                    topRight,
+                    bottomRight,
+                    bottomRight,
+                    bottomLeft,
+                    bottomLeft
                 },
                 Path.Direction.CW);
             canvas.drawPath(path, paint);
@@ -565,23 +565,6 @@ public final class TransformationUtils {
   // Avoids warnings in M+.
   private static void clear(Canvas canvas) {
     canvas.setBitmap(null);
-  }
-
-  @NonNull
-  private static Bitmap.Config getNonNullConfig(@NonNull Bitmap bitmap) {
-    return bitmap.getConfig() != null ? bitmap.getConfig() : Bitmap.Config.ARGB_8888;
-  }
-
-  private static void applyMatrix(
-      @NonNull Bitmap inBitmap, @NonNull Bitmap targetBitmap, Matrix matrix) {
-    BITMAP_DRAWABLE_LOCK.lock();
-    try {
-      Canvas canvas = new Canvas(targetBitmap);
-      canvas.drawBitmap(inBitmap, matrix, DEFAULT_PAINT);
-      clear(canvas);
-    } finally {
-      BITMAP_DRAWABLE_LOCK.unlock();
-    }
   }
 
   @VisibleForTesting

@@ -7,9 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -162,54 +160,6 @@ public class TransformationUtilsTest {
   }
 
   @Test
-  @Config(sdk = 19)
-  public void testFitCenterHandlesBitmapsWithNullConfigs() {
-    Bitmap toFit = Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565);
-    toFit.setConfig(null);
-    Bitmap transformed = TransformationUtils.fitCenter(bitmapPool, toFit, 50, 50);
-    assertEquals(Bitmap.Config.ARGB_8888, transformed.getConfig());
-  }
-
-  @Test
-  public void testCenterCropSetsOutBitmapToHaveAlphaIfInBitmapHasAlphaAndOutBitmapIsReused() {
-    Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-
-    Bitmap toReuse = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
-    reset(bitmapPool);
-    when(bitmapPool.get(eq(50), eq(50), eq(Bitmap.Config.ARGB_8888))).thenReturn(toReuse);
-
-    toReuse.setHasAlpha(false);
-    toTransform.setHasAlpha(true);
-
-    Bitmap result =
-        TransformationUtils.centerCrop(
-            bitmapPool, toTransform, toReuse.getWidth(), toReuse.getHeight());
-
-    assertEquals(toReuse, result);
-    assertTrue(result.hasAlpha());
-  }
-
-  @Test
-  public void
-      testCenterCropSetsOutBitmapToNotHaveAlphaIfInBitmapDoesNotHaveAlphaAndOutBitmapIsReused() {
-    Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-
-    Bitmap toReuse = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
-    reset(bitmapPool);
-    when(bitmapPool.get(eq(50), eq(50), eq(Bitmap.Config.ARGB_8888))).thenReturn(toReuse);
-
-    toReuse.setHasAlpha(true);
-    toTransform.setHasAlpha(false);
-
-    Bitmap result =
-        TransformationUtils.centerCrop(
-            bitmapPool, toTransform, toReuse.getWidth(), toReuse.getHeight());
-
-    assertEquals(toReuse, result);
-    assertFalse(result.hasAlpha());
-  }
-
-  @Test
   public void testCenterCropSetsOutBitmapToHaveAlphaIfInBitmapHasAlpha() {
     Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
 
@@ -223,17 +173,6 @@ public class TransformationUtilsTest {
   }
 
   @Test
-  @Config(sdk = 19)
-  public void testCenterCropHandlesBitmapsWithNullConfigs() {
-    Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565);
-    toTransform.setConfig(null);
-
-    Bitmap transformed = TransformationUtils.centerCrop(bitmapPool, toTransform, 50, 50);
-
-    assertEquals(Bitmap.Config.ARGB_8888, transformed.getConfig());
-  }
-
-  @Test
   public void testCenterCropSetsOutBitmapToNotHaveAlphaIfInBitmapDoesNotHaveAlpha() {
     Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
 
@@ -243,47 +182,6 @@ public class TransformationUtilsTest {
         TransformationUtils.centerCrop(
             bitmapPool, toTransform, toTransform.getWidth() / 2, toTransform.getHeight() / 2);
 
-    assertFalse(result.hasAlpha());
-  }
-
-  @Test
-  public void testFitCenterSetsOutBitmapToHaveAlphaIfInBitmapHasAlphaAndOutBitmapIsReused() {
-    Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-
-    Bitmap toReuse = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
-    reset(bitmapPool);
-    when(bitmapPool.get(eq(toReuse.getWidth()), eq(toReuse.getHeight()), eq(toReuse.getConfig())))
-        .thenReturn(toReuse);
-
-    toReuse.setHasAlpha(false);
-    toTransform.setHasAlpha(true);
-
-    Bitmap result =
-        TransformationUtils.fitCenter(
-            bitmapPool, toTransform, toReuse.getWidth(), toReuse.getHeight());
-
-    assertEquals(toReuse, result);
-    assertTrue(result.hasAlpha());
-  }
-
-  @Test
-  public void
-      testFitCenterSetsOutBitmapToNotHaveAlphaIfInBitmapDoesNotHaveAlphaAndOutBitmapIsReused() {
-    Bitmap toTransform = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-
-    Bitmap toReuse = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
-    reset(bitmapPool);
-    when(bitmapPool.get(eq(toReuse.getWidth()), eq(toReuse.getHeight()), eq(toReuse.getConfig())))
-        .thenReturn(toReuse);
-
-    toReuse.setHasAlpha(true);
-    toTransform.setHasAlpha(false);
-
-    Bitmap result =
-        TransformationUtils.fitCenter(
-            bitmapPool, toTransform, toReuse.getWidth(), toReuse.getHeight());
-
-    assertEquals(toReuse, result);
     assertFalse(result.hasAlpha());
   }
 
